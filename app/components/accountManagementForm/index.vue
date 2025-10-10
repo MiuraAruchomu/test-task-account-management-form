@@ -1,3 +1,4 @@
 <template>
   <AccountManagementFormHeader />
+  <AccountManagementFormHelp />
 </template>
