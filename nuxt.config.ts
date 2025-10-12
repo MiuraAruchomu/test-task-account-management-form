@@ -7,5 +7,8 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  modules: ['@nuxt/icon'],
+  modules: ['@pinia/nuxt', '@nuxt/icon'],
+  pinia: {
+    storesDirs: ['./app/stores'],
+  },
 });
