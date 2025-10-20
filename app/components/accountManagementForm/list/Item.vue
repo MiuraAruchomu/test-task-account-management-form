@@ -1,4 +1,6 @@
 <script setup>
+import { RECORD_TYPES } from '~/constants/recordTypes';
+
 const props = defineProps({
   data: {
     type: Object,
@@ -11,33 +13,21 @@ const localState = ref({ ...props.data });
 const localTags = ref([...props.data.tags].map((tag) => tag.text).join(';'));
 
 const errors = reactive({
-  tags: false,
-  login: false,
-  password: false,
+  tags: '',
+  login: '',
+  password: '',
 });
 
-const validateTags = (value) => {
-  errors.tags = value.length > 50;
-};
-
-const validateLogin = (value) => {
-  errors.login = !value?.length || value.length > 100;
-};
-
-const validatePassword = (value) => {
-  errors.password = !value?.length || value.length > 100;
-};
-
 const validateAll = () => {
-  validateTags(localTags.value);
-  validateLogin(localState.value.login);
-  if (localState.value.type === 'local') {
-    validatePassword(localState.value.password);
+  errors.tags = validateTags(localTags.value);
+  errors.login = validateLogin(localState.value.login);
+  if (localState.value.type === RECORD_TYPES.LOCAL) {
+    errors.password = validatePassword(localState.value.password);
   }
 };
 
 const handleChange = () => {
-  if (localState.value.type === 'LDAP') {
+  if (localState.value.type === RECORD_TYPES.LDAP) {
     localState.value.password = null;
     errors.password = false;
   }
@@ -68,15 +58,16 @@ const handleBlur = () => {
 <template>
   <li class="my-3 grid grid-cols-[24%_15%_24%_24%_5%] gap-[2%]">
     <UiInput v-model="localTags" :error="errors.tags" @blur="handleBlurTags" />
-    <label class="relative">
+    <label class="relative h-fit">
       <select
         v-model="localState.type"
         name="type"
-        class="px-2 w-full h-full border border-gray-300 rounded-lg cursor-pointer outline-none appearance-none"
+        class="px-2 py-1 w-full h-full border border-gray-300 rounded-lg cursor-pointer outline-none appearance-none"
         @change="handleChange"
       >
-        <option value="LDAP" selected>LDAP</option>
-        <option value="local">Локальная</option>
+        <option v-for="(value, key) in RECORD_TYPES" :key="key" :value="value">
+          {{ value }}
+        </option>
       </select>
       <Icon
         name="ix:chevron-down-small"
@@ -87,11 +78,11 @@ const handleBlur = () => {
     <UiInput
       v-model="localState.login"
       :error="errors.login"
-      :class="{ 'col-span-2': localState.type === 'LDAP' }"
+      :class="{ 'col-span-2': localState.type === RECORD_TYPES.LDAP }"
       @blur="handleBlur"
     />
     <UiInput
-      v-if="localState.type === 'local'"
+      v-if="localState.type === RECORD_TYPES.LOCAL"
       v-model="localState.password"
       :error="errors.password"
       type="password"

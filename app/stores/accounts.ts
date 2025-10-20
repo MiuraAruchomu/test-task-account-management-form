@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia';
-import type { IAccount, Itag, TAccountType } from '~/types/account';
+import { RECORD_TYPES } from '~/constants/recordTypes';
+import type {
+  IAccount,
+  Itag,
+  TAccountType,
+} from '~/types/stores/accounts-store';
 
 export const useAccountsStore = defineStore('accounts-store', () => {
   const accounts = ref<IAccount[]>([]);
@@ -9,7 +14,7 @@ export const useAccountsStore = defineStore('accounts-store', () => {
     const newRecord: IAccount = {
       id: newId,
       tags: [],
-      type: 'LDAP',
+      type: RECORD_TYPES.LDAP,
       login: null,
       password: null,
     };
@@ -43,7 +48,7 @@ export const useAccountsStore = defineStore('accounts-store', () => {
     const rec = accounts.value[index];
     if (rec) {
       rec.type = value;
-      rec.password = value === 'LDAP' ? null : rec.password;
+      rec.password = value === RECORD_TYPES.LDAP ? null : rec.password;
     }
   }
 
