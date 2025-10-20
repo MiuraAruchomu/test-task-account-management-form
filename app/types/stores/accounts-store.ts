@@ -1,8 +1,10 @@
+import type { RECORD_TYPES } from '~/constants/recordTypes';
+
 export interface Itag {
   text: string;
 }
 
-export type TAccountType = 'LDAP' | 'local';
+export type TAccountType = (typeof RECORD_TYPES)[keyof typeof RECORD_TYPES];
 
 export interface IAccount {
   id: number;
