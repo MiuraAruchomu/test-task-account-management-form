@@ -15,8 +15,8 @@ export const useAccountsStore = defineStore('accounts-store', () => {
       id: newId,
       tags: [],
       type: RECORD_TYPES.LDAP,
-      login: null,
-      password: null,
+      login: '',
+      password: '',
     };
     accounts.value.push(newRecord);
   }
@@ -48,7 +48,14 @@ export const useAccountsStore = defineStore('accounts-store', () => {
     const rec = accounts.value[index];
     if (rec) {
       rec.type = value;
-      rec.password = value === RECORD_TYPES.LDAP ? null : rec.password;
+      if (rec.type === RECORD_TYPES.LOCAL && value === RECORD_TYPES.LDAP) {
+        rec.password = null;
+      } else if (
+        rec.type === RECORD_TYPES.LDAP &&
+        value === RECORD_TYPES.LOCAL
+      ) {
+        rec.password = '';
+      }
     }
   }
 
